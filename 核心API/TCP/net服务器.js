@@ -4,6 +4,11 @@ const net = require("net");
 const server = net.createServer((socket) => {
   console.log("----- 已建立链接 -----");
 //   console.log(socket);
+//   socket为net.Socket对象，包含了连接的相关信息和方法，可以通过它来与客户端进行通信
+//   console.log(socket.remoteAddress); // 客户端的IP地址
+//   console.log(socket.remotePort); // 客户端的端口号
+//   console.log(socket.localAddress); // 服务器的IP地址
+//   console.log(socket.localPort); // 服务器的端口号
 
   // 监听数据事件
   socket.on("data", (data) => {

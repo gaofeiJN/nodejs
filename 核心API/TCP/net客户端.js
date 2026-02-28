@@ -1,6 +1,7 @@
 const net = require("net");
 
 // 创建TCP客户端
+// connection为net.Socket对象，包含了连接的相关信息和方法，可以通过它来与服务器进行通信
 const connection = net.createConnection({ port: 8080 }, () => {
   console.log("已连接到服务器");
 });
