@@ -1,7 +1,7 @@
 // TCP聊天室客户端
 
 import { createConnection } from "net";
-import { ChatMsg, MSG_TYPES } from "./ChatMsg.js";
+import { ChatMsg } from "./ChatMsg.js";
 import chalk from "chalk";
 
 let nickname = null;
@@ -19,7 +19,7 @@ client.on("connect", () => {
 
     // 如果还没有nickname，则默认用户输入的是昵称
     if (!nickname) {
-      const output = new ChatMsg(MSG_TYPES.LOGIN, "", "", input);
+      const output = new ChatMsg(ChatMsg.LOGIN, "", "", input);
       client.write(JSON.stringify(output));
       return;
     }
@@ -36,7 +36,7 @@ client.on("connect", () => {
     const matches = reg.exec(input);
     if (matches) {
       const output = new ChatMsg(
-        MSG_TYPES.PRIVATE,
+        ChatMsg.PRIVATE,
         nickname,
         matches[1],
         matches[2],
@@ -45,7 +45,7 @@ client.on("connect", () => {
       return;
     } else {
       // 否则，则为广播消息
-      const output = new ChatMsg(MSG_TYPES.BROADCAST, nickname, "", input);
+      const output = new ChatMsg(ChatMsg.BROADCAST, nickname, "", input);
       client.write(JSON.stringify(output));
       return;
     }
@@ -58,22 +58,22 @@ client.on("data", (data) => {
 
   // 显示消息
   switch (input.type) {
-    case MSG_TYPES.NOTICE:
+    case ChatMsg.NOTICE:
       console.log(
         chalk.yellow(`${input.from}`),
         chalk.yellow(`${input.content}`),
       );
       break;
-    case MSG_TYPES.BROADCAST:
+    case ChatMsg.BROADCAST:
       console.log(chalk.blue(`${input.from}`), chalk.blue(`${input.content}`));
       break;
-    case MSG_TYPES.PRIVATE:
+    case ChatMsg.PRIVATE:
       console.log(
         chalk.magenta(`${input.from}`),
         chalk.magenta(`${input.content}`),
       );
       break;
-    case MSG_TYPES.LOGIN:
+    case ChatMsg.LOGIN:
       console.log(
         chalk.green(`${input.from}`),
         chalk.green(`${input.content}`),

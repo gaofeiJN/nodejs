@@ -1,4 +1,4 @@
-import { ChatMsg, MSG_TYPES } from "./ChatMsg.js";
+import { ChatMsg } from "./ChatMsg.js";
 
 // 所有连接的集合，用于管理登录的用户，及群发消息
 const clients = new Set();
@@ -6,7 +6,7 @@ const clients = new Set();
 export function serverHandler(socket) {
   // 用户登录时提示输入昵称
   console.log(`客户端${socket.remoteAddress}:${socket.remotePort}正在连接`);
-  const msg = new ChatMsg(MSG_TYPES.NOTICE, "【系统】", "", "欢迎，请输入昵称");
+  const msg = new ChatMsg(ChatMsg.NOTICE, "【系统】", "", "欢迎，请输入昵称");
   socket.write(JSON.stringify(msg));
 
   // 监听data事件
@@ -35,7 +35,7 @@ export function serverHandler(socket) {
 
     // 广播顾客退出的消息
     let output = new ChatMsg(
-      MSG_TYPES.NOTICE,
+      ChatMsg.NOTICE,
       "【系统】",
       "",
       `${socket.nickname}退出聊天室！目前在线人数：${clients.size - 1}`,
@@ -72,9 +72,9 @@ const dataHandler = function (socket) {
     // 如果socket对象中没有nickname属性，则顾客应该首先输入的昵称
     if (!socket.nickname) {
       // 如果客户端发送的不是登录信息，则要求顾客重新输入
-      if (input.type !== MSG_TYPES.LOGIN) {
+      if (input.type !== ChatMsg.LOGIN) {
         let output = new ChatMsg(
-          MSG_TYPES.NOTICE,
+          ChatMsg.NOTICE,
           "【系统】",
           "",
           "消息类型错误，请先输入昵称！",
@@ -86,7 +86,7 @@ const dataHandler = function (socket) {
         for (let client of clients) {
           if (client.nickname === input.content) {
             const output = new ChatMsg(
-              MSG_TYPES.NOTICE,
+              ChatMsg.NOTICE,
               "【系统】",
               "",
               "该昵称已被占用，请重新输入！",
@@ -100,7 +100,7 @@ const dataHandler = function (socket) {
         clients.add(socket);
 
         let output = new ChatMsg(
-          MSG_TYPES.LOGIN,
+          ChatMsg.LOGIN,
           "【系统】",
           socket.nickname,
           `欢迎来到聊天室！目前在线人数：${clients.size}`,
@@ -109,7 +109,7 @@ const dataHandler = function (socket) {
 
         // 广播用户登录信息
         output = new ChatMsg(
-          MSG_TYPES.NOTICE,
+          ChatMsg.NOTICE,
           "【系统】",
           "",
           `欢迎${socket.nickname}加入聊天室！目前在线人数：${clients.size}`,
@@ -125,9 +125,9 @@ const dataHandler = function (socket) {
     }
 
     // 群发消息
-    if (input.type === MSG_TYPES.BROADCAST) {
+    if (input.type === ChatMsg.BROADCAST) {
       let output = new ChatMsg(
-        MSG_TYPES.BROADCAST,
+        ChatMsg.BROADCAST,
         `【${input.from}】`,
         "",
         input.content,
@@ -141,9 +141,9 @@ const dataHandler = function (socket) {
     }
 
     // 私聊消息
-    if (input.type === MSG_TYPES.PRIVATE) {
+    if (input.type === ChatMsg.PRIVATE) {
       let output = new ChatMsg(
-        MSG_TYPES.PRIVATE,
+        ChatMsg.PRIVATE,
         `【${input.from} 悄悄地说】`,
         input.to,
         input.content,
@@ -155,7 +155,7 @@ const dataHandler = function (socket) {
         }
       }
       output = new ChatMsg(
-        MSG_TYPES.NOTICE,
+        ChatMsg.NOTICE,
         "【系统】",
         input.from,
         "用户昵称错误，该用户不存在",

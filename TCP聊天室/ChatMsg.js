@@ -6,7 +6,14 @@
 //  to      : 消息的接收方
 //  content : 消息的内容
 
-class ChatMsg {
+export class ChatMsg {
+  // 静态属性
+  static NOTICE = 0;
+  static LOGIN = 1;
+  static BROADCAST = 2;
+  static PRIVATE = 3;
+
+  // 构造函数
   constructor(type, from, to, content) {
     this.type = type;
     this.from = from;
@@ -28,12 +35,3 @@ class ChatMsg {
     console.log("hello");
   }
 }
-
-const MSG_TYPES = {
-  NOTICE: 0,
-  LOGIN: 1,
-  BROADCAST: 2,
-  PRIVATE: 3,
-};
-
-export { ChatMsg, MSG_TYPES };
